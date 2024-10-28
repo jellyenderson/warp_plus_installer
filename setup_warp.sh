@@ -15,7 +15,7 @@ wgcf generate
 
 # Update wgcf-account.toml with the provided license key
 echo "Adding WARP license key to wgcf-account.toml..."
-sed -i "s/^private_key =.*/private_key = '$LICENSE_KEY'/" wgcf-account.toml
+sed -i "s/^license_key =.*/license_key = '$LICENSE_KEY'/" wgcf-account.toml
 
 # Update wgcf with the license key applied and regenerate the profile
 echo "Updating wgcf with new settings..."
