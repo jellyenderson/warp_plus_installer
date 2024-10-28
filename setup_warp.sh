@@ -25,7 +25,7 @@ wgcf generate
 # Install necessary packages
 echo "Installing required packages..."
 sudo apt update
-sudo apt install -y wireguard-dkms wireguard-tools resolvconf wireguard
+sudo apt install wireguard
 
 # Modify the wgcf-profile.conf to disable table setting
 echo "Modifying wgcf-profile.conf..."
