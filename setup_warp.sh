@@ -24,12 +24,15 @@ wgcf generate
 
 # Install necessary packages
 echo "Installing required packages..."
-sudo apt update
 sudo apt install wireguard
 
 # Modify the wgcf-profile.conf to disable table setting
 echo "Modifying wgcf-profile.conf..."
 sed -i '/\[Interface\]/a Table = off' wgcf-profile.conf
+
+# Create the WireGuard directory if it doesn't exist
+echo "Ensuring /etc/wireguard directory exists..."
+sudo mkdir -p /etc/wireguard
 
 # Move the profile to the WireGuard directory
 echo "Moving wgcf-profile.conf to /etc/wireguard/warp.conf..."
