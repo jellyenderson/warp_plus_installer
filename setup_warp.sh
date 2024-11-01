@@ -10,9 +10,9 @@ show_menu() {
   
   # Show WARP status
   if systemctl is-active --quiet wg-quick@warp; then
-    echo -e "\e[1;36mWARP Status: \e[0;92mYES\e[0m"
+    echo -e "\e[1;96mWARP Status: \e[1;32mYES\e[0m"
   else
-    echo -e "\e[1;36mWARP Status: \e[0;91mNO\e[0m"
+    echo -e "\e[1;96mWARP Status: \e[1;31mNO\e[0m"
   fi
   
   echo -e "\e[1;32m1. Setup WARP\e[0m"
@@ -20,7 +20,7 @@ show_menu() {
   if systemctl is-active --quiet wg-quick@warp; then
     echo -e "\e[1;32m3. Uninstall WARP\e[0m"
   fi
-  echo -e "\e[1;32m4. Quit\e[0m"
+  echo -e "\e[1;32m0. Quit\e[0m"
   echo -e "\e[1;34m============================\e[0m"
   echo -e "\e[1;35mCopyright 2024, Jellyenderson\e[0m"
   echo -e "\e[1;34m============================\e[0m"
@@ -253,7 +253,7 @@ uninstall_warp() {
 
 while true; do
   show_menu
-  read -p "Enter your choice [1-4]: " choice
+  read -p "Enter your choice [1-0]: " choice
   case $choice in
     1)
       setup_warp
@@ -268,7 +268,7 @@ while true; do
         echo -e "\e[1;31mInvalid option, please try again.\e[0m"
       fi
       ;;
-    4)
+    0)
       echo -e "\e[1;34mExiting... Goodbye!\e[0m"
       exit 0
       ;;
