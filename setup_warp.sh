@@ -22,7 +22,22 @@ show_menu() {
 setup_warp() {
   # Check if wgcf-account.toml already exists
   if [ -f wgcf-account.toml ]; then
-    echo -e "\e[1;33mExisting wgcf account detected. Skipping registration.\e[0m"
+    echo -e "\e[1;33mExisting wgcf account detected.\e[0m"
+    read -p "Do you want to use the existing account or delete it and register a new one? (use/delete): " ACCOUNT_CHOICE
+    if [[ "$ACCOUNT_CHOICE" == "delete" ]]; then
+      echo -e "\e[1;34mDeleting existing wgcf account...\e[0m"
+      rm -f wgcf-account.toml
+      rm -f wgcf-profile.conf
+      echo -e "\e[1;34mRegistering new wgcf account...\e[0m"
+      yes | wgcf register
+      if [ $? -ne 0 ]; then
+        echo -e "\e[1;31mError: Failed to register wgcf.\e[0m"
+        return
+      fi
+    elif [[ "$ACCOUNT_CHOICE" != "use" ]]; then
+      echo -e "\e[1;31mInvalid choice. Aborting setup.\e[0m"
+      return
+    fi
   else
     # Ask if the user has a WARP license key
     read -p "Do you have a WARP+ license key? (y/n): " HAS_LICENSE_KEY
