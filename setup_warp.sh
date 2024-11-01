@@ -20,51 +20,37 @@ show_menu() {
 
 # Function to setup WARP
 setup_warp() {
-  # Check if wgcf-account.toml already exists
-  if [ -f wgcf-account.toml ]; then
-    echo -e "\e[1;33mExisting wgcf account detected.\e[0m"
-    read -p "Do you want to use the existing account or delete it and register a new one? (use/delete): " ACCOUNT_CHOICE
-    if [[ "$ACCOUNT_CHOICE" == "delete" ]]; then
-      echo -e "\e[1;34mDeleting existing wgcf account...\e[0m"
-      rm -f wgcf-account.toml
-      rm -f wgcf-profile.conf
-      echo -e "\e[1;34mRegistering new wgcf account...\e[0m"
-      yes | wgcf register
-      if [ $? -ne 0 ]; then
-        echo -e "\e[1;31mError: Failed to register wgcf.\e[0m"
-        return
-      fi
-    elif [[ "$ACCOUNT_CHOICE" != "use" ]]; then
-      echo -e "\e[1;31mInvalid choice. Aborting setup.\e[0m"
-      return
-    fi
-  else
-    # Ask if the user has a WARP license key
-    read -p "Do you have a WARP+ license key? (y/n): " HAS_LICENSE_KEY
-    if [[ "$HAS_LICENSE_KEY" == "y" || "$HAS_LICENSE_KEY" == "Y" ]]; then
-      read -p "Enter your WARP license key: " LICENSE_KEY
-      if [ -z "$LICENSE_KEY" ]; then
-        echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
-        return
-      fi
-    fi
+  # Remove any existing configuration before starting
+  echo -e "\e[1;34mRemoving any existing WARP configuration...\e[0m"
+  rm -f wgcf-account.toml
+  rm -f wgcf-profile.conf
+  sudo rm -f /etc/wireguard/warp.conf
 
-    # Download wgcf binary
-    echo -e "\e[1;34mDownloading wgcf binary...\e[0m"
-    wget -q --show-progress https://github.com/ViRb3/wgcf/releases/download/v2.2.22/wgcf_2.2.22_linux_amd64 -O /usr/bin/wgcf
-    if [ $? -ne 0 ]; then
-      echo -e "\e[1;31mError: Failed to download wgcf binary.\e[0m"
+  # Ask if the user has a WARP license key
+  read -p "Do you have a WARP+ license key? (y/n): " HAS_LICENSE_KEY
+  if [[ "$HAS_LICENSE_KEY" == "y" || "$HAS_LICENSE_KEY" == "Y" ]]; then
+    read -p "Enter your WARP license key: " LICENSE_KEY
+    if [ -z "$LICENSE_KEY" ]; then
+      echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
       return
     fi
-    chmod +x /usr/bin/wgcf
+  fi
 
-    # Register and generate initial wgcf config
-    echo -e "\e[1;34mRegistering wgcf...\e[0m"
-    yes | wgcf register
-    if [ $? -ne 0 ]; then
-      echo -e "\e[1;31mError: Failed to register wgcf.\e[0m"
-      return
-    fi
+  # Download wgcf binary
+  echo -e "\e[1;34mDownloading wgcf binary...\e[0m"
+  wget -q --show-progress https://github.com/ViRb3/wgcf/releases/download/v2.2.22/wgcf_2.2.22_linux_amd64 -O /usr/bin/wgcf
+  if [ $? -ne 0 ]; then
+    echo -e "\e[1;31mError: Failed to download wgcf binary.\e[0m"
+    return
+  fi
+  chmod +x /usr/bin/wgcf
+
+  # Register and generate initial wgcf config
+  echo -e "\e[1;34mRegistering wgcf...\e[0m"
+  yes | wgcf register
+  if [ $? -ne 0 ]; then
+    echo -e "\e[1;31mError: Failed to register wgcf.\e[0m"
+    return
   fi
 
   # Generate the wgcf profile
@@ -129,6 +115,12 @@ setup_warp() {
 
 # Function to update WARP configuration
 update_warp_config() {
+  # Remove any existing configuration before updating
+  echo -e "\e[1;34mRemoving any existing WARP configuration...\e[0m"
+  rm -f wgcf-account.toml
+  rm -f wgcf-profile.conf
+  sudo rm -f /etc/wireguard/warp.conf
+
   # Ask if the user has a new WARP license key
   read -p "Do you have a new WARP+ license key to update? (y/n): " HAS_LICENSE_KEY
   if [[ "$HAS_LICENSE_KEY" == "y" || "$HAS_LICENSE_KEY" == "Y" ]]; then
