@@ -35,7 +35,7 @@ setup_warp() {
 
   # Register and generate initial wgcf config
   echo "Registering wgcf..."
-  wgcf register
+  yes | wgcf register
   if [ $? -ne 0 ]; then
     echo "Error: Failed to register wgcf."
     return
