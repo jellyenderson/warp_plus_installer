@@ -4,26 +4,26 @@
 
 # Menu function
 show_menu() {
-  echo -e "\e[1;34m============================\e[0m"
-  echo -e "\e[1;33m   WARP Setup Menu\e[0m"
-  echo -e "\e[1;34m============================\e[0m"
+  echo -e "\e[1;33m============================\e[0m"
+  echo -e "\e[1;96m   WARP Setup Menu\e[0m"
+  echo -e "\e[1;33m============================\e[0m"
   
   # Show WARP status
   if systemctl is-active --quiet wg-quick@warp; then
-    echo -e "\e[1;96mWARP Status: \e[1;32mYES\e[0m"
+    echo -e "\e[1;93mWARP Status: \e[1;42m YES \e[0m"
   else
-    echo -e "\e[1;96mWARP Status: \e[1;31mNO\e[0m"
+    echo -e "\e[1;93mWARP Status: \e[1;41m NO \e[0m"
   fi
   
-  echo -e "\e[1;32m1. Setup WARP\e[0m"
-  echo -e "\e[1;32m2. Update WARP Configuration\e[0m"
+  echo -e "\e[1;34m1. Setup WARP\e[0m"
+  echo -e "\e[1;34m2. Update WARP Configuration\e[0m"
   if systemctl is-active --quiet wg-quick@warp; then
-    echo -e "\e[1;32m3. Uninstall WARP\e[0m"
+    echo -e "\e[1;34m3. Uninstall WARP\e[0m"
   fi
-  echo -e "\e[1;32m0. Quit\e[0m"
-  echo -e "\e[1;34m============================\e[0m"
-  echo -e "\e[1;35mCopyright 2024, Jellyenderson\e[0m"
-  echo -e "\e[1;34m============================\e[0m"
+  echo -e "\e[1;34m0. Quit\e[0m"
+  echo -e "\e[1;33m============================\e[0m"
+  echo -e "\e[1;95mCopyright 2024, Jellyenderson\e[0m"
+  echo -e "\e[1;33m============================\e[0m"
 }
 
 # Function to setup WARP
