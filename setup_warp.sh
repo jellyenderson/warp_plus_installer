@@ -68,6 +68,7 @@ setup_warp() {
 
     # Update wgcf with the license key applied and regenerate the profile
     echo -e "\e[1;34mUpdating wgcf with new settings...\e[0m"
+    retries=0
     while true; do
       wgcf update
       wgcf generate
@@ -78,8 +79,20 @@ setup_warp() {
         echo -e "\e[1;32mWARP+ license applied successfully.\e[0m"
         break
       else
-        echo -e "\e[1;33mAccount type still free. Retrying update...\e[0m"
-        sleep 5
+        ((retries++))
+        if [ $retries -ge 5 ]; then
+          echo -e "\e[1;31mFailed to apply WARP+ license after 5 attempts. Please enter a new license key.\e[0m"
+          read -p "Enter your WARP license key: " LICENSE_KEY
+          if [ -z "$LICENSE_KEY" ]; then
+            echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
+            return
+          fi
+          sed -i "s/^license_key =.*/license_key = '$LICENSE_KEY'/" wgcf-account.toml
+          retries=0
+        else
+          echo -e "\e[1;33mAccount type still free. Retrying update... (Attempt $retries of 5)\e[0m"
+          sleep 5
+        fi
       fi
     done
   fi
@@ -146,6 +159,7 @@ update_warp_config() {
     sed -i "s/^license_key =.*/license_key = '$LICENSE_KEY'/" wgcf-account.toml
 
     # Update wgcf and regenerate profile until WARP+ is confirmed
+    retries=0
     while true; do
       wgcf update
       wgcf generate
@@ -156,8 +170,20 @@ update_warp_config() {
         echo -e "\e[1;32mWARP+ license applied successfully.\e[0m"
         break
       else
-        echo -e "\e[1;33mAccount type still free. Retrying update...\e[0m"
-        sleep 5
+        ((retries++))
+        if [ $retries -ge 5 ]; then
+          echo -e "\e[1;31mFailed to apply WARP+ license after 5 attempts. Please enter a new license key.\e[0m"
+          read -p "Enter your WARP license key: " LICENSE_KEY
+          if [ -z "$LICENSE_KEY" ]; then
+            echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
+            return
+          fi
+          sed -i "s/^license_key =.*/license_key = '$LICENSE_KEY'/" wgcf-account.toml
+          retries=0
+        else
+          echo -e "\e[1;33mAccount type still free. Retrying update... (Attempt $retries of 5)\e[0m"
+          sleep 5
+        fi
       fi
     done
 
