@@ -68,8 +68,19 @@ setup_warp() {
 
     # Update wgcf with the license key applied and regenerate the profile
     echo -e "\e[1;34mUpdating wgcf with new settings...\e[0m"
-    wgcf update
-    wgcf generate
+    while true; do
+      wgcf update
+      wgcf generate
+
+      # Check if the account type is now WARP+
+      ACCOUNT_TYPE=$(wgcf status | grep -i "Account type" | awk '{print $NF}')
+      if [[ "$ACCOUNT_TYPE" == "Plus" ]]; then
+        echo -e "\e[1;32mWARP+ license applied successfully.\e[0m"
+        break
+      else
+        echo -e "\e[1;33mAccount type still free. Retrying update...\e[0m"
+      fi
+    done
   fi
 
   # Determine Ubuntu version
@@ -133,10 +144,20 @@ update_warp_config() {
     echo -e "\e[1;34mUpdating WARP license key...\e[0m"
     sed -i "s/^license_key =.*/license_key = '$LICENSE_KEY'/" wgcf-account.toml
 
-    # Update wgcf and regenerate profile
-    echo -e "\e[1;34mUpdating wgcf with new settings...\e[0m"
-    wgcf update
-    wgcf generate
+    # Update wgcf and regenerate profile until WARP+ is confirmed
+    while true; do
+      wgcf update
+      wgcf generate
+
+      # Check if the account type is now WARP+
+      ACCOUNT_TYPE=$(wgcf status | grep -i "Account type" | awk '{print $NF}')
+      if [[ "$ACCOUNT_TYPE" == "Plus" ]]; then
+        echo -e "\e[1;32mWARP+ license applied successfully.\e[0m"
+        break
+      else
+        echo -e "\e[1;33mAccount type still free. Retrying update...\e[0m"
+      fi
+    done
 
     # Move the updated profile to the WireGuard directory
     echo -e "\e[1;34mMoving updated wgcf-profile.conf to /etc/wireguard/warp.conf...\e[0m"
@@ -165,39 +186,4 @@ uninstall_warp() {
   echo -e "\e[1;34mRemoving WARP configuration...\e[0m"
   sudo rm -f /etc/wireguard/warp.conf
 
-  echo -e "\e[1;34mRemoving wgcf binary...\e[0m"
-  sudo rm -f /usr/bin/wgcf
-
-  echo -e "\e[1;34mRemoving WireGuard packages...\e[0m"
-  sudo apt purge -y wireguard wireguard-tools wireguard-dkms resolvconf
-
-  echo -e "\e[1;32mWARP uninstalled successfully!\e[0m"
-}
-
-# Main loop
-while true; do
-  show_menu
-  read -p "Enter your choice [1-4]: " choice
-  case $choice in
-    1)
-      setup_warp
-      ;;
-    2)
-      update_warp_config
-      ;;
-    3)
-      if systemctl is-active --quiet wg-quick@warp; then
-        uninstall_warp
-      else
-        echo -e "\e[1;31mInvalid option, please try again.\e[0m"
-      fi
-      ;;
-    4)
-      echo -e "\e[1;34mExiting... Goodbye!\e[0m"
-      exit 0
-      ;;
-    *)
-      echo -e "\e[1;31mInvalid option, please try again.\e[0m"
-      ;;
-  esac
-done
+  echo -e "\e
