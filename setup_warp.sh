@@ -7,6 +7,14 @@ show_menu() {
   echo -e "\e[1;34m============================\e[0m"
   echo -e "\e[1;33m   WARP Setup Menu\e[0m"
   echo -e "\e[1;34m============================\e[0m"
+  
+  # Show WARP status
+  if systemctl is-active --quiet wg-quick@warp; then
+    echo -e "\e[1;32mWARP Status: YES\e[0m"
+  else
+    echo -e "\e[1;31mWARP Status: NO\e[0m"
+  fi
+  
   echo -e "\e[1;32m1. Setup WARP\e[0m"
   echo -e "\e[1;32m2. Update WARP Configuration\e[0m"
   if systemctl is-active --quiet wg-quick@warp; then
