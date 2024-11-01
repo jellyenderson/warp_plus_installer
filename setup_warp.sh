@@ -2,19 +2,25 @@
 
 # Copyright 2024, Jellyenderson
 
-# Menu function
-show_menu() {
+# WARP Status Function
+show_warp_status() {
   echo -e "\e[1;33m============================\e[0m"
-  echo -e "\e[1;96m   WARP Setup Menu\e[0m"
+  echo -e "\e[1;96m   WARP Status\e[0m"
   echo -e "\e[1;33m============================\e[0m"
-  
   # Show WARP status
   if systemctl is-active --quiet wg-quick@warp; then
     echo -e "\e[1;93mWARP Status: \e[1;42m YES \e[0m"
   else
     echo -e "\e[1;93mWARP Status: \e[1;41m NO \e[0m"
   fi
-  
+  echo -e "\e[1;33m============================\e[0m"
+}
+
+# Menu function
+show_menu() {
+  echo -e "\e[1;33m============================\e[0m"
+  echo -e "\e[1;96m   WARP Setup Menu\e[0m"
+  echo -e "\e[1;33m============================\e[0m"
   echo -e "\e[1;34m1. Setup WARP\e[0m"
   echo -e "\e[1;34m2. Update WARP Configuration\e[0m"
   if systemctl is-active --quiet wg-quick@warp; then
@@ -252,8 +258,9 @@ uninstall_warp() {
 # Main
 
 while true; do
+  show_warp_status
   show_menu
-  read -p "Enter your choice [1-0]: " choice
+  read -p "Enter your choice [0-3]: " choice
   case $choice in
     1)
       setup_warp
