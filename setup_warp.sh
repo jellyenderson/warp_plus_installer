@@ -81,14 +81,23 @@ setup_warp() {
       else
         ((retries++))
         if [ $retries -ge 5 ]; then
-          echo -e "\e[1;31mFailed to apply WARP+ license after 5 attempts. Please enter a new license key.\e[0m"
-          read -p "Enter your WARP license key: " LICENSE_KEY
-          if [ -z "$LICENSE_KEY" ]; then
-            echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
+          echo -e "\e[1;31mFailed to apply WARP+ license after 5 attempts. Do you want to continue anyway or replace the license key? (c/r):\e[0m"
+          read -p "Enter your choice (c to continue, r to replace the license key): " USER_CHOICE
+          if [[ "$USER_CHOICE" == "r" || "$USER_CHOICE" == "R" ]]; then
+            read -p "Enter your new WARP license key: " LICENSE_KEY
+            if [ -z "$LICENSE_KEY" ]; then
+              echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
+              return
+            fi
+            sed -i "s/^license_key =.*/license_key = '$LICENSE_KEY'/" wgcf-account.toml
+            retries=0
+          elif [[ "$USER_CHOICE" == "c" || "$USER_CHOICE" == "C" ]]; then
+            echo -e "\e[1;33mContinuing without WARP+ license.\e[0m"
+            break
+          else
+            echo -e "\e[1;31mInvalid choice. Aborting.\e[0m"
             return
           fi
-          sed -i "s/^license_key =.*/license_key = '$LICENSE_KEY'/" wgcf-account.toml
-          retries=0
         else
           echo -e "\e[1;33mAccount type still free. Retrying update... (Attempt $retries of 5)\e[0m"
           sleep 5
@@ -172,14 +181,23 @@ update_warp_config() {
       else
         ((retries++))
         if [ $retries -ge 5 ]; then
-          echo -e "\e[1;31mFailed to apply WARP+ license after 5 attempts. Please enter a new license key.\e[0m"
-          read -p "Enter your WARP license key: " LICENSE_KEY
-          if [ -z "$LICENSE_KEY" ]; then
-            echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
+          echo -e "\e[1;31mFailed to apply WARP+ license after 5 attempts. Do you want to continue anyway or replace the license key? (c/r):\e[0m"
+          read -p "Enter your choice (c to continue, r to replace the license key): " USER_CHOICE
+          if [[ "$USER_CHOICE" == "r" || "$USER_CHOICE" == "R" ]]; then
+            read -p "Enter your new WARP license key: " LICENSE_KEY
+            if [ -z "$LICENSE_KEY" ]; then
+              echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
+              return
+            fi
+            sed -i "s/^license_key =.*/license_key = '$LICENSE_KEY'/" wgcf-account.toml
+            retries=0
+          elif [[ "$USER_CHOICE" == "c" || "$USER_CHOICE" == "C" ]]; then
+            echo -e "\e[1;33mContinuing without WARP+ license.\e[0m"
+            break
+          else
+            echo -e "\e[1;31mInvalid choice. Aborting.\e[0m"
             return
           fi
-          sed -i "s/^license_key =.*/license_key = '$LICENSE_KEY'/" wgcf-account.toml
-          retries=0
         else
           echo -e "\e[1;33mAccount type still free. Retrying update... (Attempt $retries of 5)\e[0m"
           sleep 5
