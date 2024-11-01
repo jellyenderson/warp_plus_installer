@@ -10,9 +10,9 @@ show_menu() {
   
   # Show WARP status
   if systemctl is-active --quiet wg-quick@warp; then
-    echo -e "\e[1;32mWARP Status: YES\e[0m"
+    echo -e "\e[1;36mWARP Status: \e[0;92mYES\e[0m"
   else
-    echo -e "\e[1;31mWARP Status: NO\e[0m"
+    echo -e "\e[1;36mWARP Status: \e[0;91mNO\e[0m"
   fi
   
   echo -e "\e[1;32m1. Setup WARP\e[0m"
