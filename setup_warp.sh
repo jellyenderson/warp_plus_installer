@@ -20,33 +20,40 @@ show_menu() {
 
 # Function to setup WARP
 setup_warp() {
-  # Ask if the user has a WARP license key
-  read -p "Do you have a WARP+ license key? (y/n): " HAS_LICENSE_KEY
-  if [[ "$HAS_LICENSE_KEY" == "y" || "$HAS_LICENSE_KEY" == "Y" ]]; then
-    read -p "Enter your WARP license key: " LICENSE_KEY
-    if [ -z "$LICENSE_KEY" ]; then
-      echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
+  # Check if wgcf-account.toml already exists
+  if [ -f wgcf-account.toml ]; then
+    echo -e "\e[1;33mExisting wgcf account detected. Skipping registration.\e[0m"
+  else
+    # Ask if the user has a WARP license key
+    read -p "Do you have a WARP+ license key? (y/n): " HAS_LICENSE_KEY
+    if [[ "$HAS_LICENSE_KEY" == "y" || "$HAS_LICENSE_KEY" == "Y" ]]; then
+      read -p "Enter your WARP license key: " LICENSE_KEY
+      if [ -z "$LICENSE_KEY" ]; then
+        echo -e "\e[1;31mError: WARP license key cannot be empty.\e[0m"
+        return
+      fi
+    fi
+
+    # Download wgcf binary
+    echo -e "\e[1;34mDownloading wgcf binary...\e[0m"
+    wget -q --show-progress https://github.com/ViRb3/wgcf/releases/download/v2.2.22/wgcf_2.2.22_linux_amd64 -O /usr/bin/wgcf
+    if [ $? -ne 0 ]; then
+      echo -e "\e[1;31mError: Failed to download wgcf binary.\e[0m"
+      return
+    fi
+    chmod +x /usr/bin/wgcf
+
+    # Register and generate initial wgcf config
+    echo -e "\e[1;34mRegistering wgcf...\e[0m"
+    yes | wgcf register
+    if [ $? -ne 0 ]; then
+      echo -e "\e[1;31mError: Failed to register wgcf.\e[0m"
       return
     fi
   fi
 
-  # Download wgcf binary
-  echo -e "\e[1;34mDownloading wgcf binary...\e[0m"
-  wget -q --show-progress https://github.com/ViRb3/wgcf/releases/download/v2.2.22/wgcf_2.2.22_linux_amd64 -O /usr/bin/wgcf
-  if [ $? -ne 0 ]; then
-    echo -e "\e[1;31mError: Failed to download wgcf binary.\e[0m"
-    return
-  fi
-  chmod +x /usr/bin/wgcf
-
-  # Register and generate initial wgcf config
-  echo -e "\e[1;34mRegistering wgcf...\e[0m"
-  yes | wgcf register
-  if [ $? -ne 0 ]; then
-    echo -e "\e[1;31mError: Failed to register wgcf.\e[0m"
-    return
-  fi
-
+  # Generate the wgcf profile
+  echo -e "\e[1;34mGenerating wgcf profile...\e[0m"
   wgcf generate
   if [ $? -ne 0 ]; then
     echo -e "\e[1;31mError: Failed to generate wgcf profile.\e[0m"
