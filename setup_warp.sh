@@ -245,12 +245,12 @@ uninstall_warp() {
 # Function to show WARP status
 show_warp_status() {
   echo -e "\e[1;34mFetching server IP...\e[0m"
-  SERVER_IP=$(curl -s https://ipinfo.io/ip)
+  SERVER_IP=$(curl -s https://ifconfig.co)
   echo -e "\e[1;32mServer IP: $SERVER_IP\e[0m"
 
   if systemctl is-active --quiet wg-quick@warp; then
     echo -e "\e[1;34mFetching IP after WARP is enabled...\e[0m"
-    WARP_IP=$(curl -s --interface wgcf https://ipinfo.io/ip)
+    WARP_IP=$(curl -s --interface wgcf https://ifconfig.co)
     echo -e "\e[1;32mIP after WARP: $WARP_IP\e[0m"
   else
     echo -e "\e[1;31mWARP is not currently active.\e[0m"
