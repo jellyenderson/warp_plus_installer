@@ -12,8 +12,7 @@ show_menu() {
   if systemctl is-active --quiet wg-quick@warp; then
     echo -e "\e[1;32m3. Uninstall WARP\e[0m"
   fi
-  echo -e "\e[1;32m4. Show WARP Status\e[0m"
-  echo -e "\e[1;32m5. Quit\e[0m"
+  echo -e "\e[1;32m4. Quit\e[0m"
   echo -e "\e[1;34m============================\e[0m"
   echo -e "\e[1;35mCopyright 2024, Jellyenderson\e[0m"
   echo -e "\e[1;34m============================\e[0m"
@@ -242,26 +241,11 @@ uninstall_warp() {
   echo -e "\e[1;32mWARP uninstalled successfully!\e[0m"
 }
 
-# Function to show WARP status
-show_warp_status() {
-  echo -e "\e[1;34mFetching server IP...\e[0m"
-  SERVER_IP=$(curl -s https://httpbin.org/ip | jq -r '.origin')
-  echo -e "\e[1;32mServer IP: $SERVER_IP\e[0m"
-
-  if systemctl is-active --quiet wg-quick@warp; then
-    echo -e "\e[1;34mFetching IP after WARP is enabled...\e[0m"
-    WARP_IP=$(curl -s --interface wgcf https://httpbin.org/ip | jq -r '.origin')
-    echo -e "\e[1;32mIP after WARP: $WARP_IP\e[0m"
-  else
-    echo -e "\e[1;31mWARP is not currently active.\e[0m"
-  fi
-}
-
 # Main
 
 while true; do
   show_menu
-  read -p "Enter your choice [1-5]: " choice
+  read -p "Enter your choice [1-4]: " choice
   case $choice in
     1)
       setup_warp
@@ -277,9 +261,6 @@ while true; do
       fi
       ;;
     4)
-      show_warp_status
-      ;;
-    5)
       echo -e "\e[1;34mExiting... Goodbye!\e[0m"
       exit 0
       ;;
