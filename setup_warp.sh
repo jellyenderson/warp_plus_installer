@@ -74,11 +74,12 @@ setup_warp() {
 
       # Check if the account type is now WARP+
       ACCOUNT_TYPE=$(wgcf status | grep -i "Account type" | awk '{print $NF}')
-      if [[ "$ACCOUNT_TYPE" == "Plus" ]]; then
+      if [[ "$ACCOUNT_TYPE" =~ "Plus" ]]; then
         echo -e "\e[1;32mWARP+ license applied successfully.\e[0m"
         break
       else
         echo -e "\e[1;33mAccount type still free. Retrying update...\e[0m"
+        sleep 5
       fi
     done
   fi
@@ -151,11 +152,12 @@ update_warp_config() {
 
       # Check if the account type is now WARP+
       ACCOUNT_TYPE=$(wgcf status | grep -i "Account type" | awk '{print $NF}')
-      if [[ "$ACCOUNT_TYPE" == "Plus" ]]; then
+      if [[ "$ACCOUNT_TYPE" =~ "Plus" ]]; then
         echo -e "\e[1;32mWARP+ license applied successfully.\e[0m"
         break
       else
         echo -e "\e[1;33mAccount type still free. Retrying update...\e[0m"
+        sleep 5
       fi
     done
 
@@ -185,5 +187,43 @@ uninstall_warp() {
 
   echo -e "\e[1;34mRemoving WARP configuration...\e[0m"
   sudo rm -f /etc/wireguard/warp.conf
+  rm -f wgcf-account.toml
+  rm -f wgcf-profile.conf
 
-  echo -e "\e
+  echo -e "\e[1;34mRemoving wgcf binary...\e[0m"
+  sudo rm -f /usr/bin/wgcf
+
+  echo -e "\e[1;34mRemoving WireGuard packages...\e[0m"
+  sudo apt purge -y wireguard wireguard-tools wireguard-dkms resolvconf
+
+  echo -e "\e[1;32mWARP uninstalled successfully!\e[0m"
+}
+
+# Main
+
+while true; do
+  show_menu
+  read -p "Enter your choice [1-4]: " choice
+  case $choice in
+    1)
+      setup_warp
+      ;;
+    2)
+      update_warp_config
+      ;;
+    3)
+      if systemctl is-active --quiet wg-quick@warp; then
+        uninstall_warp
+      else
+        echo -e "\e[1;31mInvalid option, please try again.\e[0m"
+      fi
+      ;;
+    4)
+      echo -e "\e[1;34mExiting... Goodbye!\e[0m"
+      exit 0
+      ;;
+    *)
+      echo -e "\e[1;31mInvalid option, please try again.\e[0m"
+      ;;
+  esac
+done
