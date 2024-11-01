@@ -95,8 +95,7 @@ setup_warp() {
             echo -e "\e[1;33mContinuing without WARP+ license.\e[0m"
             break
           else
-            echo -e "\e[1;31mInvalid choice. Aborting.\e[0m"
-            return
+            echo -e "\e[1;31mInvalid choice. Please enter 'c' to continue or 'r' to replace the license key.\e[0m"
           fi
         else
           echo -e "\e[1;33mAccount type still free. Retrying update... (Attempt $retries of 5)\e[0m"
@@ -195,8 +194,7 @@ update_warp_config() {
             echo -e "\e[1;33mContinuing without WARP+ license.\e[0m"
             break
           else
-            echo -e "\e[1;31mInvalid choice. Aborting.\e[0m"
-            return
+            echo -e "\e[1;31mInvalid choice. Please enter 'c' to continue or 'r' to replace the license key.\e[0m"
           fi
         else
           echo -e "\e[1;33mAccount type still free. Retrying update... (Attempt $retries of 5)\e[0m"
