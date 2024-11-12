@@ -90,7 +90,7 @@ setup_warp() {
 
       # Check if the account type is now WARP+
       ACCOUNT_TYPE=$(wgcf status | grep -i "Account type" | awk '{print $NF}')
-      if [[ "$ACCOUNT_TYPE" =~ "Plus" ]]; then
+      if [[ "$ACCOUNT_TYPE" =~ "Limited" ]]; then
         echo -e "\e[1;32mWARP+ license applied successfully.\e[0m"
         break
       else
